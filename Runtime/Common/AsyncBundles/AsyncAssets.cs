@@ -16,7 +16,7 @@ namespace Common.AsyncBundles
 
         private static AsyncAssetImpl RuntimeImpl => _impl ?? (_impl = new AsyncAssetImpl());
         private static AsyncAssetEditorImpl EditorImpl => _editorImpl ?? (_editorImpl = new AsyncAssetEditorImpl());
-        private static bool IsRuntime => Application.isPlaying && !Settings.UseAssetDatabase;
+        private static bool IsRuntime => Application.isPlaying && Settings.SourceMode != SourceMode.AssetDatabase;
 
         private static IAsyncAssetImpl Impl
         {
@@ -67,8 +67,16 @@ namespace Common.AsyncBundles
             return Impl.RetainByGuid<T>(guid, context);
         }
 
+        public enum SourceMode
+        {
+            AssetDatabase = 0,
+            LocalBundles = 1,
+            ManifestBundles = 2,
+        }
+
         public static class Settings
         {
+            private const string SourceModePrefName = nameof(AsyncAssets) + ".sourceMode";
             private const string UseAssetDatabasePrefName = nameof(AsyncAssets) + ".useAssetDatabase";
             private const string UseAssetDatabaseNetworkEmulationPrefName = nameof(AsyncAssets) + ".useAssetDatabaseNetworkEmulation";
             private const string AssetDatabaseNetworkEmulationSpeedPrefName = nameof(AsyncAssets) + ".assetDatabaseNetworkEmulationSpeed";
@@ -93,38 +101,20 @@ namespace Common.AsyncBundles
                 }
             }
 
-            public static bool UseLocalBundles
+            public static SourceMode SourceMode
             {
                 get
                 {
 #if UNITY_EDITOR
-                    return UnityEditor.EditorPrefs.GetBool(UseLocalBundlesPrefName);
+                    return (SourceMode)UnityEditor.EditorPrefs.GetInt(SourceModePrefName);
 #else
-          return false;
+                    return SourceMode.ManifestBundles;
 #endif
                 }
                 set
                 {
 #if UNITY_EDITOR
-                    UnityEditor.EditorPrefs.SetBool(UseLocalBundlesPrefName, value);
-#endif
-                }
-            }
-
-            public static bool UseAssetDatabase
-            {
-                set
-                {
-#if UNITY_EDITOR
-                    UnityEditor.EditorPrefs.SetBool(UseAssetDatabasePrefName, value);
-#endif
-                }
-                get
-                {
-#if UNITY_EDITOR
-                    return UnityEditor.EditorPrefs.GetBool(UseAssetDatabasePrefName);
-#else
-          return false;
+                    UnityEditor.EditorPrefs.SetInt(SourceModePrefName, (int)value);
 #endif
                 }
             }

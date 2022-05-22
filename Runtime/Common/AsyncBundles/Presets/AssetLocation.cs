@@ -4,14 +4,14 @@ using UnityEngine;
 namespace Common.AsyncBundles.Presets
 {
     [Serializable]
-    [CreateAssetMenu(fileName = nameof(AssetGroupPath), menuName = "Assets/GroupPath")]
-    public class AssetGroupPath : ScriptableObject
+    [CreateAssetMenu(fileName = nameof(AssetLocation), menuName = "Assets/AssetLocation")]
+    public class AssetLocation : ScriptableObject
     {
         public string BuildPath;
         public string LoadPath;
 
 #if UNITY_EDITOR
-        public static AssetGroupPath[] EditorCache;
+        public static AssetLocation[] EditorCache;
 
         void OnEnable()
         {

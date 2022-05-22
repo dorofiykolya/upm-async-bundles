@@ -22,7 +22,7 @@ namespace Common.AsyncBundles.Manifests
                 [AssetPathKeyType.DataPath] = Application.dataPath,
                 [AssetPathKeyType.StreamingAssets] = Application.streamingAssetsPath,
                 [AssetPathKeyType.PersistentDataPath] = Application.persistentDataPath,
-                UseLocalBundles = AsyncAssets.Settings.UseLocalBundles,
+                UseLocalBundles = AsyncAssets.Settings.SourceMode == AsyncAssets.SourceMode.LocalBundles,
                 LocalBundlePath = AsyncAssets.Settings.BuildPath
             };
             return result;

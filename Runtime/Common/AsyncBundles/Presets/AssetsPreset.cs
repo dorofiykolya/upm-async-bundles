@@ -20,5 +20,9 @@ namespace Common.AsyncBundles.Presets
         [Range(1, 600),
          Tooltip("Sets UnityWebRequest to attempt to abort after the number of seconds in timeout have passed.")]
         public int Timeout = 5;
+
+        public AssetLocation Path;
+        public string[] Dependencies;
+        public string[] Patches;
     }
 }

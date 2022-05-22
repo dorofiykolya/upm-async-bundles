@@ -12,7 +12,7 @@ namespace Common.AsyncBundles.Presets
         public PackType PackType;
         public UnloadType UnloadType;
         [Range(0, 10), Tooltip("Seconds")] public float DelayToUnload;
-        public AssetGroupPath Path;
+        public AssetLocation Path;
         public AssetInfo[] Assets;
         public AssetGroupBuildProcessor[] Processors;
         public AssetGroupBuildCondition[] Conditions;

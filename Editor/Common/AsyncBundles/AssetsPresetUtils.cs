@@ -112,32 +112,32 @@ namespace Common.AsyncBundles
             }
         }
 
-        public static AssetGroupPath[] GetGroupPath(bool reload = false)
+        public static AssetLocation[] GetGroupPath(bool reload = false)
         {
-            if (AssetGroupPath.EditorCache == null || reload ||
-                AssetGroupPath.EditorCache.Any(groupPath => groupPath == null))
+            if (AssetLocation.EditorCache == null || reload ||
+                AssetLocation.EditorCache.Any(groupPath => groupPath == null))
             {
-                var presets = AssetDatabase.FindAssets($"t:{nameof(AssetGroupPath)}");
+                var presets = AssetDatabase.FindAssets($"t:{nameof(AssetLocation)}");
                 var list = ListPool<string>.Pop();
                 foreach (var preset in presets)
                 {
                     list.Add(AssetDatabase.GUIDToAssetPath(preset));
                 }
 
-                var paths = ListPool<AssetGroupPath>.Pop();
+                var paths = ListPool<AssetLocation>.Pop();
                 foreach (var path in list)
                 {
-                    paths.Add(AssetDatabase.LoadAssetAtPath<AssetGroupPath>(path));
+                    paths.Add(AssetDatabase.LoadAssetAtPath<AssetLocation>(path));
                 }
 
                 var result = paths.ToArray();
 
                 ListPool<string>.Push(list);
-                ListPool<AssetGroupPath>.Push(paths);
-                AssetGroupPath.EditorCache = result;
+                ListPool<AssetLocation>.Push(paths);
+                AssetLocation.EditorCache = result;
             }
 
-            return AssetGroupPath.EditorCache;
+            return AssetLocation.EditorCache;
         }
 
         public static AssetsPreset Get()
@@ -328,7 +328,7 @@ namespace Common.AsyncBundles
             }
         }
 
-        public static AssetGroupPath NewPath(AssetsPreset preset)
+        public static AssetLocation NewPath(AssetsPreset preset)
         {
             var path = AssetDatabase.GetAssetPath(preset);
             var dir = Path.GetDirectoryName(path);
@@ -340,7 +340,7 @@ namespace Common.AsyncBundles
             }
 
             var unique = Hash128.Compute(GUID.Generate().ToString()).ToString().Substring(0, 6);
-            var asset = ScriptableObject.CreateInstance<AssetGroupPath>();
+            var asset = ScriptableObject.CreateInstance<AssetLocation>();
             asset.BuildPath = string.Empty;
             asset.LoadPath = string.Empty;
             AssetDatabase.CreateAsset(asset, Path.Combine(groupPath, $"GroupPath_{unique}.asset"));

@@ -4,13 +4,13 @@ using UnityEngine;
 
 namespace Common.AsyncBundles
 {
-    [CustomEditor(typeof(AssetGroupPath))]
+    [CustomEditor(typeof(AssetLocation))]
     public class AssetGroupPathEditor : UnityEditor.Editor
     {
         public override void OnInspectorGUI()
         {
-            var buildProperty = serializedObject.FindProperty(nameof(AssetGroupPath.BuildPath));
-            var localProperty = serializedObject.FindProperty(nameof(AssetGroupPath.LoadPath));
+            var buildProperty = serializedObject.FindProperty(nameof(AssetLocation.BuildPath));
+            var localProperty = serializedObject.FindProperty(nameof(AssetLocation.LoadPath));
 
             EditorGUILayout.Space();
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);

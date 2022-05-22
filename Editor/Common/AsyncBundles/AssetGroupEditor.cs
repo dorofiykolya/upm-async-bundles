@@ -64,7 +64,7 @@ namespace Common.AsyncBundles
             GUILayout.Label("Build And Load");
             GUILayout.Space(16f);
 
-            var groupPath = pathProperty.objectReferenceValue as AssetGroupPath;
+            var groupPath = pathProperty.objectReferenceValue as AssetLocation;
             var groupPaths = AssetsPresetUtils.GetGroupPath();
 
             EditorGUI.showMixedValue = pathProperty.hasMultipleDifferentValues;
@@ -106,11 +106,11 @@ namespace Common.AsyncBundles
                 {
                     EditorGUILayout.BeginVertical(EditorStyles.helpBox);
                     EditorGUILayout.Space();
-                    EditorGUILayout.TextField(nameof(AssetGroupPath.LoadPath), groupPath.LoadPath);
+                    EditorGUILayout.TextField(nameof(AssetLocation.LoadPath), groupPath.LoadPath);
                     EditorGUILayout.TextField("Preview", AssetBuilder.ProcessPreviewPath(groupPath.LoadPath),
                         EditorStyles.label);
                     EditorGUILayout.Space();
-                    EditorGUILayout.TextField(nameof(AssetGroupPath.BuildPath), groupPath.BuildPath);
+                    EditorGUILayout.TextField(nameof(AssetLocation.BuildPath), groupPath.BuildPath);
                     EditorGUILayout.TextField("Preview", AssetBuilder.ProcessPreviewPath(groupPath.BuildPath),
                         EditorStyles.label);
                     EditorGUILayout.EndVertical();

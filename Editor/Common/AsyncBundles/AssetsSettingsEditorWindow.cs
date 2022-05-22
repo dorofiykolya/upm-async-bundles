@@ -8,40 +8,59 @@ namespace Common.AsyncBundles
 {
     public class AssetsSettingsEditorWindow : EditorWindow
     {
+        private Vector2 _scroll;
+
         [MenuItem(AssetsPresetUtils.MenuItem + "/Settings", priority = -2010)]
         public static void Open()
         {
             GetWindow<AssetsSettingsEditorWindow>("AsyncAssets Settings").Show(true);
         }
 
+        //-------------------------------------------------------------------------------------------------------------------------
         [MenuItem(AssetsPresetUtils.MenuItem + "/Use AssetDatabase", priority = -3010)]
         public static void ToggleUseAssetDatabase()
         {
-            AsyncAssets.Settings.UseAssetDatabase = !AsyncAssets.Settings.UseAssetDatabase;
-            Menu.SetChecked(AssetsPresetUtils.MenuItem + "/Use AssetDatabase", AsyncAssets.Settings.UseAssetDatabase);
+            AsyncAssets.Settings.SourceMode = AsyncAssets.SourceMode.AssetDatabase;
+            Menu.SetChecked(AssetsPresetUtils.MenuItem + "/Use AssetDatabase", true);
         }
 
         [MenuItem(AssetsPresetUtils.MenuItem + "/Use AssetDatabase", true)]
         private static bool ToggleUseAssetDatabaseValidator()
         {
-            Menu.SetChecked(AssetsPresetUtils.MenuItem + "/Use AssetDatabase", AsyncAssets.Settings.UseAssetDatabase);
-            return true;
+            Menu.SetChecked(AssetsPresetUtils.MenuItem + "/Use AssetDatabase", AsyncAssets.Settings.SourceMode == AsyncAssets.SourceMode.AssetDatabase);
+            return true; //AsyncAssets.Settings.SourceMode != AsyncAssets.SourceMode.AssetDatabase;
         }
 
         //
         [MenuItem(AssetsPresetUtils.MenuItem + "/Use LocalBundles", priority = -3010)]
         public static void ToggleUseLocalBundle()
         {
-            AsyncAssets.Settings.UseLocalBundles = !AsyncAssets.Settings.UseLocalBundles;
-            Menu.SetChecked(AssetsPresetUtils.MenuItem + "/Use LocalBundles", AsyncAssets.Settings.UseLocalBundles);
+            AsyncAssets.Settings.SourceMode = AsyncAssets.SourceMode.LocalBundles;
+            Menu.SetChecked(AssetsPresetUtils.MenuItem + "/Use LocalBundles", true);
         }
 
         [MenuItem(AssetsPresetUtils.MenuItem + "/Use LocalBundles", true)]
         private static bool ToggleUseLocalBundleValidator()
         {
-            Menu.SetChecked(AssetsPresetUtils.MenuItem + "/Use LocalBundles", AsyncAssets.Settings.UseLocalBundles);
-            return true;
+            Menu.SetChecked(AssetsPresetUtils.MenuItem + "/Use LocalBundles", AsyncAssets.Settings.SourceMode == AsyncAssets.SourceMode.LocalBundles);
+            return true; //AsyncAssets.Settings.SourceMode != AsyncAssets.SourceMode.LocalBundles;
         }
+
+        [MenuItem(AssetsPresetUtils.MenuItem + "/Use ManifestBundles", priority = -3010)]
+        public static void ToggleUseManifestBundles()
+        {
+            AsyncAssets.Settings.SourceMode = AsyncAssets.SourceMode.ManifestBundles;
+            Menu.SetChecked(AssetsPresetUtils.MenuItem + "/Use ManifestBundles", true);
+        }
+
+        [MenuItem(AssetsPresetUtils.MenuItem + "/Use ManifestBundles", true)]
+        private static bool ToggleUseManifestBundlesValidator()
+        {
+            Menu.SetChecked(AssetsPresetUtils.MenuItem + "/Use ManifestBundles", AsyncAssets.Settings.SourceMode == AsyncAssets.SourceMode.ManifestBundles);
+            return true; //AsyncAssets.Settings.SourceMode != AsyncAssets.SourceMode.ManifestBundles;
+        }
+
+        //-------------------------------------------------------------------------------------------------------------------------
 
         void OnEnable()
         {
@@ -69,11 +88,17 @@ namespace Common.AsyncBundles
 
         void OnGUI()
         {
-            OnGUISettings();
+            _scroll = EditorGUILayout.BeginScrollView(_scroll);
+
+            OnGUISourceMode();
 
             EditorGUILayout.Separator();
 
             OnGUIAssetDatabaseTools();
+
+            EditorGUILayout.Separator();
+
+            OnGUIGroups();
 
             EditorGUILayout.Separator();
 
@@ -82,6 +107,8 @@ namespace Common.AsyncBundles
             EditorGUILayout.Separator();
 
             OnGUITools();
+
+            EditorGUILayout.EndScrollView();
         }
 
         void OnGUIAssetDatabaseTools()
@@ -165,17 +192,21 @@ namespace Common.AsyncBundles
             EditorGUILayout.EndVertical();
         }
 
-        void OnGUISettings()
+        void OnGUISourceMode()
         {
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-            GUILayout.Label("Settings", EditorStyles.boldLabel);
+            GUILayout.Label("Source Mode", EditorStyles.boldLabel);
             EditorGUILayout.Separator();
-            AsyncAssets.Settings.UseAssetDatabase =
-                EditorGUILayout.ToggleLeft("Use AssetDatabase", AsyncAssets.Settings.UseAssetDatabase);
-            AsyncAssets.Settings.UseLocalBundles =
-                EditorGUILayout.ToggleLeft("Use Local Bundles", AsyncAssets.Settings.UseLocalBundles);
+            AsyncAssets.Settings.SourceMode = (AsyncAssets.SourceMode)EditorGUILayout.EnumPopup("Source Mode", AsyncAssets.Settings.SourceMode);
             EditorGUILayout.HelpBox("\"Use AssetDatabase\" and \"Use Local Bundles\" take effect on start play",
                 MessageType.Info);
+            EditorGUILayout.EndVertical();
+        }
+
+        void OnGUIGroups()
+        {
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+            GUILayout.Label("Groups", EditorStyles.boldLabel);
             GUILayout.Space(16f);
             AsyncAssets.Settings.DependencyResolverUseDisableGroups = EditorGUILayout.ToggleLeft(
                 $"Dependency Resolver Use Do Not \"{nameof(AssetGroup.PackToBundle)}\" Groups",
