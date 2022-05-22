@@ -1,0 +1,15 @@
+{
+    "name": "dorofiykolya.async.bundles",
+    "references": [
+        "dorofiykolya.lifetime",
+        "dorofiykolya.signal"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": []
+}
