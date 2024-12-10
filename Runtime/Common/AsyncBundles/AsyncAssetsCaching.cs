@@ -21,6 +21,10 @@ namespace Common.AsyncBundles
         {
             _onReady = new Signal(lifetime);
 
+#if UNITY_WEBGL
+            _isReady = true;
+#else
+
             var cache = Caching.GetCacheByPath(CacheDir);
             if (!cache.valid)
             {
@@ -29,6 +33,7 @@ namespace Common.AsyncBundles
             }
 
             provider.StartCoroutine(WaitCacheReady(cache), lifetime);
+#endif
         }
 
         public void ExecuteOnReady(Lifetime lifetime, Action listener)
@@ -37,6 +42,7 @@ namespace Common.AsyncBundles
             else _onReady.Subscribe(lifetime, listener);
         }
 
+#if !UNITY_WEBGL
         private IEnumerator WaitCacheReady(Cache cache)
         {
             while (true)
@@ -52,5 +58,6 @@ namespace Common.AsyncBundles
                 }
             }
         }
+#endif
     }
 }
