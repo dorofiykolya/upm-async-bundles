@@ -19,7 +19,9 @@ namespace Common.AsyncBundles
         private readonly AsyncAssetsCaching _caching;
         private AssetManifestProvider _manifestProvider;
         private bool _isReady;
+#if !UNITY_WEBGL
         private Thread _startThread;
+#endif
 
         public AsyncAssetImpl()
         {
@@ -57,7 +59,10 @@ namespace Common.AsyncBundles
                 AsyncBundleLoaderManager.Timeout = manifest.Timeout;
 
                 var specialDirectories = AssetProviderSettings.Create();
-
+#if UNITY_WEBGL
+                _manifestProvider = new AssetManifestProvider(manifest, specialDirectories);
+                assetProviderDef.Terminate();
+#else
                 _startThread = new Thread(() =>
                 {
                     var provider = new AssetManifestProvider(manifest, specialDirectories);
@@ -71,7 +76,9 @@ namespace Common.AsyncBundles
                 {
                     IsBackground = true
                 };
-                _startThread.Start();
+                _startThread.Start();     
+#endif
+                
 
                 _caching.ExecuteOnReady(_lifetime, () => cachingDef.Terminate());
             };
